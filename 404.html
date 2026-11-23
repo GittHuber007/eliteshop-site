@@ -18,7 +18,7 @@
   else if (p === '/collections') to = 'collections.html';
   else if ((m = p.match(/^\/collections\/(.+)$/))) to = 'collection.html?coll=' + m[1];
   else if (p === '/contact') to = 'contact.html';
-  else if (p === '/portfolio' || p === '/lookbook') to = 'lookbook.html';
+  else if (p === '/portfolio' || p === '/lookbook') to = 'collection.html?cat=tout';
   else if (p === '/wishlist') to = 'favoris.html';
   else if (p === '/admin/login') to = 'login.html';
   else if (p.indexOf('/admin') === 0) to = 'admin.html';
