@@ -305,17 +305,17 @@ const cols = p.colors.filter(c => c.name && !/^principal$/i.test(c.name));
 const sizes = p.sizes.length ? p.sizes : ['Unique'];
 const crumb = shoe ? `<a href="collection.html?cat=chaussures">Chaussures</a>` : `<a href="collection.html?cat=pap">Prêt-à-porter</a>`;
 const typeLink = p.type && !['Autres','Chaussures'].includes(p.type) ? ` / <a href="collection.html?cat=${p.cat}&amp;type=${encodeURIComponent(p.type)}">${esc(p.type)}</a>` : '';
-const w = isWish(p.id);
+const w = isWish(p.id), out = isOut(p);
 document.querySelector('[data-pi]').innerHTML = `
   <nav class="bc cap" aria-label="Fil d'Ariane"><a href="index.html">Accueil</a> / ${crumb}${typeLink}</nav>
   <h1 class="disp">${esc(p.name)}</h1>
   <div class="rate"><span class="stars" aria-hidden="true">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5 - Math.round(p.rating))}</span><span>${String(p.rating).replace('.', ',')} · ${p.reviews} avis</span></div>
-  <div class="pi__meta"><span>${esc(p.color)}</span>${priceHtml(p)}</div>
+  <div class="pi__meta"><span>${esc(p.color)}</span><span>${priceHtml(p)}${out ? '<span class="pi__out cap">Épuisé</span>' : ''}</span></div>
   ${cols.length > 1 ? `<div class="opt"><div class="opt__h cap"><span>Couleur</span><span data-cname>${esc(cols[0].name)}</span></div><div class="cols">${cols.map((c, i) => `<button data-col="${esc(c.name)}" class="${i ? '' : 'on'}" style="background:${esc(c.hex || '#ccc')}" aria-label="${esc(c.name)}" title="${esc(c.name)}"></button>`).join('')}</div></div>` : ''}
   <div class="opt"><div class="opt__h cap"><span>${shoe ? 'Pointure' : 'Taille'}</span></div>
     <div class="sizes" style="grid-template-columns:repeat(${Math.min(sizes.length, 6)},1fr)">${sizes.map(s => `<button data-sz="${esc(s)}">${esc(s)}</button>`).join('')}</div>
     <p class="err" data-err hidden>Choisissez ${shoe ? 'une pointure' : 'une taille'}.</p></div>
-  <div class="buy"><button class="btn-fill" data-buy>Ajouter au panier</button><button class="wbtn${w ? ' on' : ''}" data-wish="${p.id}" aria-pressed="${w}" aria-label="Ajouter aux favoris">${HEART}</button></div>
+  <div class="buy"><button class="btn-fill" data-buy${out ? ' disabled' : ''}>${out ? 'Épuisé' : 'Ajouter au panier'}</button><button class="wbtn${w ? ' on' : ''}" data-wish="${p.id}" aria-pressed="${w}" aria-label="Ajouter aux favoris">${HEART}</button></div>
   <a class="btn-wa" data-wa href="#" target="_blank" rel="noopener">Commander sur WhatsApp</a>
   <div class="acc cap">
     ${p.long ? `<details open><summary>Description</summary><div class="in" style="text-transform:none;letter-spacing:.01em">${p.long.split('\n').filter(l => l.trim()).map(l => `<p>${esc(l)}</p>`).join('')}</div></details>` : ''}
@@ -328,7 +328,7 @@ const setWa = () => { waBtn.href = waUrl(`Bonjour ELITEshop 👋,\nJe souhaite c
 setWa();
 document.querySelectorAll('[data-sz]').forEach(b => b.addEventListener('click', () => { size = b.dataset.sz; document.querySelectorAll('[data-sz]').forEach(x => x.classList.toggle('on', x === b)); document.querySelector('[data-err]').hidden = true; setWa() }));
 document.querySelectorAll('[data-col]').forEach(b => b.addEventListener('click', () => { color = b.dataset.col; document.querySelectorAll('[data-col]').forEach(x => x.classList.toggle('on', x === b)); const n = document.querySelector('[data-cname]'); if (n) n.textContent = color; setWa() }));
-document.querySelector('[data-buy]').addEventListener('click', () => { if (!size){ document.querySelector('[data-err]').hidden = false; return } addToCart(p.id, size, color) });
+document.querySelector('[data-buy]').addEventListener('click', () => { if (out) return; if (!size){ document.querySelector('[data-err]').hidden = false; return } addToCart(p.id, size, color) });
 const rel = P.filter(x => x.cat === p.cat && x.id !== p.id).sort((a, b) => (b.type === p.type) - (a.type === p.type) || (b.coll === p.coll) - (a.coll === p.coll)).slice(0, 10);
 document.querySelector('[data-rel]').innerHTML = rel.map(card).join('');
 const relA = document.querySelector('.rel .rail__ctl a');

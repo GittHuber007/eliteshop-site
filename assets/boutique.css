@@ -9,6 +9,8 @@
 .wbtn.on svg{fill:currentColor}
 .wbtn:hover{background:#fff}
 .badge{position:absolute;left:10px;top:10px;background:var(--accent);color:#fff;padding:5px 9px;font-size:9.5px;z-index:2}
+.badge--out{background:rgba(247,244,239,.92);color:var(--ink)}
+.pi__out{margin-left:12px;color:var(--muted)}
 .pr{color:var(--ink)}
 .pr s{color:var(--muted);margin-right:6px}
 .ico .wcount{position:absolute;top:9px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--accent);font-size:0}

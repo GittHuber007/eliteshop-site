@@ -14,6 +14,10 @@ const store = {
 const pUrl = p => 'produit.html?p=' + encodeURIComponent(p.slug || p.id);
 const priceHtml = p => p.oldPrice && p.oldPrice > p.price
   ? `<span class="pr"><s>${esMoney(p.oldPrice)}</s> ${esMoney(p.price)}</span>` : `<span class="pr">${esMoney(p.price)}</span>`;
+/* produits epuises : liste fixe demandee par la boutique, plus tout produit a 1 MAD ou moins (prix pas encore saisi).
+   Le stock de la base n'est pas utilise. */
+const ES_OUT = new Set(['21c5e1ea-dfc4-41ac-a56d-173e0291f8f7', '23d552d6-f5b3-48d4-bd4b-7c96115f7bae', 'df5078ce-e0f3-4f70-ba0a-d8382bfe5a6b', '4092b7d5-e1b0-4e57-85fb-a7fa6dc0e9a5']);
+const isOut = p => !!p && (ES_OUT.has(p.id) || p.price <= 1);
 const HEART = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 21s-7-4.5-9.5-9.5C1 8 3 4.5 6.5 4.5c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3C21 4.5 23 8 21.5 11.5 19 16.5 12 21 12 21z"/></svg>';
 
 /* favoris */
@@ -33,7 +37,7 @@ function renderWishCount(){
 function card(p){
   const g = p.gallery, alt = g[1] ? g[1] : null, w = isWish(p.id);
   return `<div class="card rv"><a href="${pUrl(p)}">
-    <div class="card__img"><img src="${esc(g[0][0])}" alt="${esc(p.name + colOf(p))}" loading="lazy" decoding="async">${alt ? `<img class="alt" src="${esc(alt[0])}" alt="" loading="lazy">` : ''}${p.oldPrice && p.oldPrice > p.price ? '<span class="badge cap">Promo</span>' : ''}</div>
+    <div class="card__img"><img src="${esc(g[0][0])}" alt="${esc(p.name + colOf(p))}" loading="lazy" decoding="async">${alt ? `<img class="alt" src="${esc(alt[0])}" alt="" loading="lazy">` : ''}${isOut(p) ? '<span class="badge badge--out cap">Épuisé</span>' : p.oldPrice && p.oldPrice > p.price ? '<span class="badge cap">Promo</span>' : ''}</div>
     <div class="card__info"><span class="card__name">${esc(p.name)}</span><span class="card__sub">${p.color ? esc(p.color) + ' · ' : ''}${priceHtml(p)}</span></div></a>
     <button class="wbtn${w ? ' on' : ''}" data-wish="${p.id}" aria-pressed="${w}" aria-label="Ajouter ${esc(p.name)} aux favoris">${HEART}</button>
   </div>`;
@@ -47,9 +51,10 @@ function toast(msg){
 }
 
 /* panier : lignes {id, size, color, qty} */
-const cart = () => store.get('es2-cart', []).filter(x => byId(x.id));
+const cart = () => store.get('es2-cart', []).filter(x => byId(x.id) && !isOut(byId(x.id)));
 function saveCart(c){ store.set('es2-cart', c); renderCart() }
 function addToCart(id, size, color){
+  if (isOut(byId(id))){ toast('Ce modèle est épuisé'); return }
   const c = cart(), it = c.find(x => x.id === id && x.size === size && (x.color || '') === (color || ''));
   if (it) it.qty++; else c.push({id, size, color: color || '', qty:1});
   saveCart(c); openPanel('cart');
