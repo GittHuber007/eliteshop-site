@@ -225,6 +225,10 @@ a:hover>.ul::after,.ul:hover::after{transform:scaleX(1)}
   .pi{position:static;height:auto;min-height:0;padding:30px 20px 0}.bc{margin-bottom:22px}}
 </style>
 <link rel="stylesheet" href="assets/boutique.css">
+<!-- Meta Pixel ELITE shop -->
+<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1453032923647153');fbq('track','PageView');</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1453032923647153&ev=PageView&noscript=1"/></noscript>
+<!-- Fin Meta Pixel -->
 </head>
 <body class="solid">
 <header class="hd" id="hd">
@@ -308,7 +312,7 @@ const w = isWish(p.id), out = isOut(p);
 document.querySelector('[data-pi]').innerHTML = `
   <nav class="bc cap" aria-label="Fil d'Ariane"><a href="index.html">Accueil</a> / ${crumb}${typeLink}</nav>
   <h1 class="disp">${esc(p.name)}</h1>
-  <div class="rate"><span class="stars" aria-hidden="true">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5 - Math.round(p.rating))}</span><span>${String(p.rating).replace('.', ',')} · ${p.reviews} avis</span></div>
+  ${p.reviews > 0 ? `<div class="rate"><span class="stars" aria-hidden="true">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5 - Math.round(p.rating))}</span><span>${String(p.rating).replace('.', ',')} · ${p.reviews} avis</span></div>` : ''}
   <div class="pi__meta"><span>${esc(p.color)}</span><span>${priceHtml(p)}${out ? '<span class="pi__out cap">Épuisé</span>' : ''}</span></div>
   ${cols.length > 1 ? `<div class="opt"><div class="opt__h cap"><span>Couleur</span><span data-cname>${esc(cols[0].name)}</span></div><div class="cols">${cols.map((c, i) => `<button data-col="${esc(c.name)}" class="${i ? '' : 'on'}" style="background:${esc(c.hex || '#ccc')}" aria-label="${esc(c.name)}" title="${esc(c.name)}"></button>`).join('')}</div></div>` : ''}
   <div class="opt"><div class="opt__h cap"><span>${shoe ? 'Pointure' : 'Taille'}</span></div>
