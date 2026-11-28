@@ -9,7 +9,7 @@ const ES_SHOP = {phone:'+212 7 66 96 38 26', address:'1 rue Ain Al Aouda, Casabl
 let P = [], COLLS = [], THEME = null;
 
 const esMoney = n => (Math.round(n * 100) / 100).toLocaleString('fr-FR', {maximumFractionDigits:2}).replace(/ | /g, ' ') + ' MAD';
-const esCents = v => v == null || isNaN(v) ? 0 : Math.round(v) / 100;
+const esCents = v => v == null || isNaN(v) ? 0 : Math.round(v / 100); /* prix arrondis au dirham (demande de Mehdi, 28/11) */
 const ES_SIZE_ORDER = ['XXS','XS','S','M','L','XL','XXL','Unique'];
 const esSizeSort = a => [...new Set(a)].sort((x, y) => { const r = s => { const i = ES_SIZE_ORDER.indexOf(s); if (i >= 0) return i; const n = parseInt(s, 10); return isNaN(n) ? 500 + s.charCodeAt(0) : 100 + n }; return r(x) - r(y) });
 const ES_TYPES = [
