@@ -315,23 +315,19 @@ document.querySelector('[data-pi]').innerHTML = `
   ${p.reviews > 0 ? `<div class="rate"><span class="stars" aria-hidden="true">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5 - Math.round(p.rating))}</span><span>${String(p.rating).replace('.', ',')} · ${p.reviews} avis</span></div>` : ''}
   <div class="pi__meta"><span>${esc(p.color)}</span><span>${priceHtml(p)}${out ? '<span class="pi__out cap">Épuisé</span>' : ''}</span></div>
   ${cols.length > 1 ? `<div class="opt"><div class="opt__h cap"><span>Couleur</span><span data-cname>${esc(cols[0].name)}</span></div><div class="cols">${cols.map((c, i) => `<button data-col="${esc(c.name)}" class="${i ? '' : 'on'}" style="background:${esc(c.hex || '#ccc')}" aria-label="${esc(c.name)}" title="${esc(c.name)}"></button>`).join('')}</div></div>` : ''}
-  <div class="opt"><div class="opt__h cap"><span>${shoe ? 'Pointure' : 'Taille'}</span></div>
-    <div class="sizes" style="grid-template-columns:repeat(${Math.min(sizes.length, 6)},1fr)">${sizes.map(s => `<button data-sz="${esc(s)}">${esc(s)}</button>`).join('')}</div>
-    <p class="err" data-err hidden>Choisissez ${shoe ? 'une pointure' : 'une taille'}.</p></div>
+  <p class="note" style="margin-top:18px">${shoe ? 'Pointure' : 'Taille'} : indiquez-la-nous sur WhatsApp, nous vérifions la disponibilité.</p>
   <div class="buy"><button class="btn-fill" data-buy${out ? ' disabled' : ''}>${out ? 'Épuisé' : 'Ajouter au panier'}</button><button class="wbtn${w ? ' on' : ''}" data-wish="${p.id}" aria-pressed="${w}" aria-label="Ajouter aux favoris">${HEART}</button></div>
   ${out ? '' : '<a class="btn-wa" data-wa href="#" target="_blank" rel="noopener">Commander sur WhatsApp</a>'}
   <div class="acc cap">
     ${p.long ? `<details open><summary>Description</summary><div class="in" style="text-transform:none;letter-spacing:.01em">${p.long.split('\n').filter(l => l.trim()).map(l => `<p>${esc(l)}</p>`).join('')}</div></details>` : ''}
     <details><summary>Livraison et commande</summary><div class="in" style="text-transform:none;letter-spacing:.01em"><p>Livraison offerte dès 1500 MAD au Maroc. Commande WhatsApp disponible 7/7.</p><p>Boutique : ${esc(ES_SHOP.address)} · ${esc(ES_SHOP.hours)}.</p></div></details>
   </div>`;
-let size = sizes.length === 1 ? sizes[0] : null, color = cols.length ? cols[0].name : (p.color || '');
-if (size) document.querySelector('[data-sz]').classList.add('on');
+let size = '', color = cols.length ? cols[0].name : (p.color || '');
 const waBtn = document.querySelector('[data-wa]');
 const setWa = () => { if (waBtn) waBtn.href = waUrl(`Bonjour ELITEshop 👋,\nJe souhaite commander le produit suivant :\n- Nom : ${p.name}\n- Prix : ${p.price} MAD${size ? '\n- Taille : ' + size : ''}${color ? '\n- Couleur : ' + color : ''}\n\nMerci de me confirmer la disponibilité et les tailles.`) };
 setWa();
-document.querySelectorAll('[data-sz]').forEach(b => b.addEventListener('click', () => { size = b.dataset.sz; document.querySelectorAll('[data-sz]').forEach(x => x.classList.toggle('on', x === b)); document.querySelector('[data-err]').hidden = true; setWa() }));
 document.querySelectorAll('[data-col]').forEach(b => b.addEventListener('click', () => { color = b.dataset.col; document.querySelectorAll('[data-col]').forEach(x => x.classList.toggle('on', x === b)); const n = document.querySelector('[data-cname]'); if (n) n.textContent = color; setWa() }));
-document.querySelector('[data-buy]').addEventListener('click', () => { if (out) return; if (!size){ document.querySelector('[data-err]').hidden = false; return } addToCart(p.id, size, color) });
+document.querySelector('[data-buy]').addEventListener('click', () => { if (out) return; addToCart(p.id, size, color) });
 const rel = P.filter(x => x.cat === p.cat && x.id !== p.id).sort((a, b) => (b.type === p.type) - (a.type === p.type) || (b.coll === p.coll) - (a.coll === p.coll)).slice(0, 10);
 document.querySelector('[data-rel]').innerHTML = rel.map(card).join('');
 const relA = document.querySelector('.rel .rail__ctl a');

@@ -68,7 +68,7 @@ function renderCart(){
   const b = document.querySelector('[data-cart-body]'); if (!b) return;
   b.innerHTML = c.length ? c.map((x, i) => { const p = byId(x.id); return `<div class="ci">
       <a href="${pUrl(p)}"><img src="${esc(p.gallery[0][0])}" alt=""></a>
-      <div><h3>${esc(p.name)}</h3><p>${x.color ? esc(x.color) + ' · ' : ''}${p.cat === 'chaussures' ? 'Pointure' : 'Taille'} ${esc(x.size)}</p><p>${esMoney(p.price)}</p>
+      <div><h3>${esc(p.name)}</h3><p>${x.color ? esc(x.color) : ''}${x.size ? (x.color ? ' · ' : '') + (p.cat === 'chaussures' ? 'Pointure' : 'Taille') + ' ' + esc(x.size) : ''}</p><p>${esMoney(p.price)}</p>
       <div class="ci__row"><div class="qty"><button data-q="${i}" data-d="-1" aria-label="Retirer un">−</button><span>${x.qty}</span><button data-q="${i}" data-d="1" aria-label="Ajouter un">+</button></div>
       <button class="rm" data-rm="${i}">Retirer</button></div></div></div>` }).join('')
     : `<div class="empty"><p class="disp" style="font-size:22px;color:var(--ink);margin-bottom:14px">Panier vide</p><a class="btn-line btn-line--d" style="margin-top:20px" href="collection.html?cat=tout">Découvrir</a></div>`;
@@ -76,7 +76,7 @@ function renderCart(){
 /* message de commande : meme format que le site actuel */
 function orderMessage(c){
   const L = c.map((x, i) => { const p = byId(x.id);
-    return `${i + 1}. ${p.name}\n   Réf: ${p.slug} | Couleur: ${x.color || (p.color || 'Principal')} | Taille: ${x.size}\n   Qté: ${x.qty} | Prix: ${p.price} MAD | Sous-total: ${Math.round(p.price * x.qty * 100) / 100} MAD` });
+    return `${i + 1}. ${p.name}\n   Réf: ${p.slug} | Couleur: ${x.color || (p.color || 'Principal')} | Taille: ${x.size || 'à préciser'}\n   Qté: ${x.qty} | Prix: ${p.price} MAD | Sous-total: ${Math.round(p.price * x.qty * 100) / 100} MAD` });
   return ['Bonjour, je souhaite commander :', '', ...L, '', `Total: ${Math.round(cartTotal(c) * 100) / 100} MAD`].join('\n');
 }
 const waUrl = text => `https://wa.me/${ES_WA}?text=${encodeURIComponent(text)}`;
